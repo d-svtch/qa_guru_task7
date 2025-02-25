@@ -10,6 +10,9 @@ from homework.models import Product
 def product():
     return Product("book", 100, "This is a book", 1000)
 
+def new_product():
+    return Product("postcard", 10, "Just a postcard", 5000)
+
 
 class TestProducts:
     """
@@ -19,16 +22,23 @@ class TestProducts:
 
     def test_product_check_quantity(self, product):
         # TODO напишите проверки на метод check_quantity
-        pass
+        assert product.check_quantity(1000) is True
+        assert product.check_quantity(500) is True
+        # assert product.check_quantity(1001) is False
+        # assert product.check_quantity(0) is False
+        # assert product.check_quantity(-1) is False
 
     def test_product_buy(self, product):
         # TODO напишите проверки на метод buy
-        pass
+        assert product.buy(1000) is True
+        assert product.buy(500) is True
 
     def test_product_buy_more_than_available(self, product):
         # TODO напишите проверки на метод buy,
         #  которые ожидают ошибку ValueError при попытке купить больше, чем есть в наличии
-        pass
+        assert product.buy(1001) is ValueError
+        # assert product.buy(0) is ValueError
+        # assert product.buy(-1) is ValueError
 
 
 class TestCart:
