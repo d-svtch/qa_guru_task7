@@ -31,7 +31,6 @@ class Product:
         else:
             return ValueError
 
-
     def __hash__(self):
         return hash(self.name + self.description)
 
@@ -55,6 +54,10 @@ class Cart:
         Если продукт уже есть в корзине, то увеличиваем количество
         """
 
+        if product in self.products:
+            self.products[product] += buy_count
+        else:
+            self.products[product] = buy_count
 
     def remove_product(self, product: Product, remove_count=None):
         """
@@ -62,13 +65,19 @@ class Cart:
         Если remove_count не передан, то удаляется вся позиция
         Если remove_count больше, чем количество продуктов в позиции, то удаляется вся позиция
         """
-        raise NotImplementedError
+        if product in self.products:
+            self.products[product] -= remove_count
+        else:
+            self.products[product] = 0
 
     def clear(self):
-        raise NotImplementedError
+        self.products = {}
 
     def get_total_price(self) -> float:
-        raise NotImplementedError
+        price = 0
+        for product, count in self.products.items():
+            price += product.price * count
+        return price
 
     def buy(self):
         """
@@ -76,4 +85,11 @@ class Cart:
         Учтите, что товаров может не хватать на складе.
         В этом случае нужно выбросить исключение ValueError
         """
-        raise NotImplementedError
+        for product, count in self.products.items():
+            # Я хотел добавить проверку на наличие всех товаров из корзины на скоале, но мне это так и не удалось
+            # На второй итерации появляется ошибка AttributeError: 'function' object has no attribute 'buy'
+            # Которую я так и не смог решить
+            if product.buy(count) is ValueError:
+                return product.buy(count)
+        self.clear()
+        return "Покупка успешно завершена!"
