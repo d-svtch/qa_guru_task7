@@ -18,7 +18,7 @@ class Product:
         TODO Верните True если количество продукта больше или равно запрашиваемому
             и False в обратном случае
         """
-        return self.quantity >= quantity > 0
+        return self.quantity >= quantity
 
     def buy(self, quantity):
         """
@@ -27,6 +27,7 @@ class Product:
             Если продуктов не хватает, то выбросите исключение ValueError
         """
         if self.check_quantity(quantity):
+            self.quantity -= quantity
             return True
         else:
             return ValueError
@@ -65,10 +66,14 @@ class Cart:
         Если remove_count не передан, то удаляется вся позиция
         Если remove_count больше, чем количество продуктов в позиции, то удаляется вся позиция
         """
+
         if product in self.products:
-            self.products[product] -= remove_count
+            if remove_count is None or remove_count > self.products[product]:
+                del self.products[product]
+            else:
+                self.products[product] -= remove_count
         else:
-            self.products[product] = 0
+            return
 
     def clear(self):
         self.products = {}
@@ -86,10 +91,6 @@ class Cart:
         В этом случае нужно выбросить исключение ValueError
         """
         for product, count in self.products.items():
-            # Я хотел добавить проверку на наличие всех товаров из корзины на скоале, но мне это так и не удалось
-            # На второй итерации появляется ошибка AttributeError: 'function' object has no attribute 'buy'
-            # Которую я так и не смог решить
             if product.buy(count) is ValueError:
                 return product.buy(count)
-        self.clear()
         return "Покупка успешно завершена!"
