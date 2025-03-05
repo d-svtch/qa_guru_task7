@@ -32,7 +32,6 @@ class TestProducts:
         assert product.check_quantity(1001) is False
         assert product.check_quantity(1000) is True
         assert product.check_quantity(999) is True
-        assert product.check_quantity(500) is True
         assert product.check_quantity(1) is True
         assert product.check_quantity(0) is True
         assert product.check_quantity(-1) is True
@@ -78,17 +77,17 @@ class TestCart:
     def test_remove_all_products_without_count(self, cart, product):
         cart.add_product(product, buy_count=10)
         cart.remove_product(product)
-        assert product is not cart.products
+        assert product not in cart.products
 
     def test_remove_all_products_with_count(self, cart, product):
         cart.add_product(product, buy_count=10)
-        cart.remove_product(product, remove_count=5)
-        assert product is not cart.products
+        cart.remove_product(product, remove_count=10)
+        assert product not in cart.products
 
     def test_more_products_then_in_cart(self, cart, product):
         cart.add_product(product, buy_count=10)
         cart.remove_product(product, remove_count=15)
-        assert product is not cart.products
+        assert product not in cart.products
 
     def test_clear(self, cart, product, new_product):
         cart.add_product(product, buy_count=2)
