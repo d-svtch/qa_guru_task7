@@ -72,8 +72,6 @@ class Cart:
                 del self.products[product]
             else:
                 self.products[product] -= remove_count
-        else:
-            return
 
     def clear(self):
         self.products = {}
@@ -91,6 +89,9 @@ class Cart:
         В этом случае нужно выбросить исключение ValueError
         """
         for product, count in self.products.items():
-            if product.buy(count) is ValueError:
-                return product.buy(count)
+            if product.check_quantity(count) is False:
+                return ValueError
+
+        for product, count in self.products.items():
+            product.buy(count)
         return "Покупка успешно завершена!"

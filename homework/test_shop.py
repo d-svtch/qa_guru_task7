@@ -75,8 +75,14 @@ class TestCart:
         cart.remove_product(product, remove_count=5)
         assert cart.products[product] == 5
 
-    def test_remove_all_products(self, cart, product):
+    def test_remove_all_products_without_count(self, cart, product):
+        cart.add_product(product, buy_count=10)
         cart.remove_product(product)
+        assert product is not cart.products
+
+    def test_remove_all_products_with_count(self, cart, product):
+        cart.add_product(product, buy_count=10)
+        cart.remove_product(product, remove_count=5)
         assert product is not cart.products
 
     def test_more_products_then_in_cart(self, cart, product):
@@ -107,3 +113,10 @@ class TestCart:
     def test_unsuccessfull_buy(self, cart, product, new_product):
         cart.add_product(product, buy_count=50000)
         assert cart.buy() is ValueError
+
+    def test_unsuccessfull_buy_with_two_products(self, cart, product, new_product):
+        cart.add_product(product, buy_count=200)
+        cart.add_product(product, buy_count=50000)
+        assert cart.buy() is ValueError
+        assert product.quantity == 1000
+        assert new_product.quantity == 5000
